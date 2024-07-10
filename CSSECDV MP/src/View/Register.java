@@ -1,12 +1,25 @@
 
 package View;
+import Controller.SQLite;
+import Model.User;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class Register extends javax.swing.JPanel {
 
     public Frame frame;
+    private final SQLite sqlite;
+    private static final int MIN_PASS_LENGTH = 8;
     
     public Register() {
         initComponents();
+        sqlite = new SQLite();
     }
 
     @SuppressWarnings("unchecked")
@@ -37,6 +50,11 @@ public class Register extends javax.swing.JPanel {
         usernameFld.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         usernameFld.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         usernameFld.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 2, true), "USERNAME", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
+        usernameFld.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usernameFldActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -94,17 +112,81 @@ public class Register extends javax.swing.JPanel {
                 .addComponent(registerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(64, Short.MAX_VALUE))
         );
+
+        passwordFld.getAccessibleContext().setAccessibleDescription("");
     }// </editor-fold>//GEN-END:initComponents
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        frame.registerAction(usernameFld.getText(), passwordFld.getText(), confpassFld.getText());
-        frame.loginNav();
+       
+        if (doesUserExist(usernameFld.getText())){
+            JOptionPane.showMessageDialog(null, "User already exists.");
+            
+        } else if (passwordFld.getText().length() < MIN_PASS_LENGTH){
+            JOptionPane.showMessageDialog(null, "Password should be at least 8 characters");
+        }
+        
+          else if (isPassNotMatched(passwordFld.getText(), confpassFld.getText())){
+            JOptionPane.showMessageDialog(null, "Passwords do not match.");
+        }
+
+        else {
+            String hashedPassword = null;
+            
+            try {
+                hashedPassword = hashPassword(passwordFld.getText());
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            frame.registerAction(usernameFld.getText(), hashedPassword, hashedPassword);
+            frame.loginNav();
+        }
     }//GEN-LAST:event_registerBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
         frame.loginNav();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void usernameFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameFldActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_usernameFldActionPerformed
+
+    public boolean doesUserExist(String username){
+        ArrayList<User> users = sqlite.getUsers();
+        
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public boolean isPassNotMatched(String password, String confirm){
+        return !password.equals(confirm);
+ 
+    }
+    
+    public String hashPassword(String password) throws NoSuchAlgorithmException{
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(salt);
+        
+        byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashedPassword) {
+            sb.append(String.format("%02x", b & 0xFF));
+        }
+        
+        return sb.toString();
+      
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
@@ -114,4 +196,8 @@ public class Register extends javax.swing.JPanel {
     private javax.swing.JButton registerBtn;
     private javax.swing.JTextField usernameFld;
     // End of variables declaration//GEN-END:variables
+    
+   
+
 }
+
