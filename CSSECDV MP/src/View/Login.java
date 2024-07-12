@@ -92,9 +92,9 @@ public class Login extends javax.swing.JPanel {
     
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton loginBtn;
-    private javax.swing.JTextField passwordFld;
+    private javax.swing.JPasswordField passwordFld;
     private javax.swing.JButton registerBtn;
-    private javax.swing.JTextField usernameFld;
+    private javax.swing.JPasswordField usernameFld;
     /*
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
