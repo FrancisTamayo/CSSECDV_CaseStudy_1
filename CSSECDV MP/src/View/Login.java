@@ -1,12 +1,26 @@
 
 package View;
 
+import Model.User;
+import java.util.ArrayList;
+import Controller.SQLite;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 public class Login extends javax.swing.JPanel {
 
     public Frame frame;
+    private final SQLite sqlite;
+    
     
     public Login() {
         initComponents();
+        sqlite = new SQLite();
     }
 
     @SuppressWarnings("unchecked")
@@ -83,18 +97,111 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        frame.mainNav();
+        
+        if (doesUserExist(usernameFld.getText())) {
+            try {
+                if (isPasswordCorrect(usernameFld.getText(), passwordFld.getText())){
+                    clearFields();
+                    frame.mainNav();
+                    
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
+                }
+                
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid Username or Password!"); 
+        }
+        
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
         frame.registerNav();
     }//GEN-LAST:event_registerBtnActionPerformed
     
+    public boolean doesUserExist(String username){
+        ArrayList<User> users = sqlite.getUsers();
+        
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    // look up credentials to check if password is correct
+    public boolean isPasswordCorrect(String usernameInput, String passwordInput) throws NoSuchAlgorithmException{
+        ArrayList<User> users = sqlite.getUsers();
+        
+        for (User user : users) {
+            if (user.getUsername().equals(usernameInput)) {
+                
+                byte[] salt = getSalt(user.getPassword());
+                String hashedPasswordInput = hashPassword(passwordInput, salt);
+                
+                if (user.getPassword().equals(hashedPasswordInput)){
+                    return true;
+                }   
+            }
+        }
+        
+        return false;
+    }
+    
+    public String hashPassword(String password, byte[] salt) throws NoSuchAlgorithmException{
+
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(salt);
+
+        byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashedPassword) {
+            sb.append(String.format("%02x", b & 0xFF));
+        }
+
+        return sb.toString()+ Arrays.toString(salt);
+      
+    }
+    
+    public byte[] getSalt(String input) {
+
+        int start = input.indexOf('[');
+        int end = input.indexOf(']');
+        
+        String saltString = input.substring(start + 1, end);
+
+        String[] byteArray = saltString.split(",");
+        byte[] salt = new byte[byteArray.length];
+
+        if (start != -1 && end != -1 && end > start) {
+            
+            for (int i = 0; i < byteArray.length; i++) {
+                salt[i] = Byte.parseByte(byteArray[i].trim());
+            }
+
+        }
+        
+        return salt;
+        
+    }
+    
+     private void clearFields() {
+        usernameFld.setText("");
+        passwordFld.setText("");
+    }
+    
+    
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton loginBtn;
     private javax.swing.JPasswordField passwordFld;
     private javax.swing.JButton registerBtn;
-    private javax.swing.JPasswordField usernameFld;
+    private javax.swing.JTextField usernameFld;
     /*
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

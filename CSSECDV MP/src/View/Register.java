@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 public class Register extends javax.swing.JPanel {
 
@@ -128,6 +129,7 @@ public class Register extends javax.swing.JPanel {
             
             try {
                 hashedPassword = hashPassword(passwordFld.getText());
+            
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -135,6 +137,7 @@ public class Register extends javax.swing.JPanel {
             if (registerUser(usernameFld.getText(), hashedPassword)) {
                 JOptionPane.showMessageDialog(null, "User registered successfully.");
                 frame.registerAction(usernameFld.getText(), hashedPassword, hashedPassword);
+                clearFields();
                 frame.loginNav();
             } else {
                 JOptionPane.showMessageDialog(null, "Failed to register user.");
@@ -198,7 +201,12 @@ public class Register extends javax.swing.JPanel {
             sb.append(String.format("%02x", b & 0xFF));
         }
         
-        return sb.toString();
+        //System.out.println(Arrays.toString(salt));
+        for (byte s : salt) {
+            System.out.print(s + " ");
+        }
+        
+        return sb.toString()+Arrays.toString(salt);
       
     }
     
@@ -225,6 +233,12 @@ public class Register extends javax.swing.JPanel {
         }
 
         return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
+    }
+    
+    private void clearFields() {
+        usernameFld.setText("");
+        passwordFld.setText("");
+        confpassFld.setText("");
     }
     
     private javax.swing.JButton backBtn;
