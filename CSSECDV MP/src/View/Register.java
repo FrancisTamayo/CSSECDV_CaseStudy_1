@@ -121,7 +121,8 @@ public class Register extends javax.swing.JPanel {
         if (doesUserExist(usernameFld.getText())) {
             JOptionPane.showMessageDialog(null, "User already exists.");
         } else if (!isPasswordComplex(passwordFld.getText())) {
-            JOptionPane.showMessageDialog(null, "Password should be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+            JOptionPane.showMessageDialog(null, "Password should be at least 8 characters long, "
+                    + "contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
         } else if (isPassNotMatched(passwordFld.getText(), confpassFld.getText())) {
             JOptionPane.showMessageDialog(null, "Passwords do not match.");
         } else {
@@ -163,7 +164,7 @@ public class Register extends javax.swing.JPanel {
             return true;
         
         } catch (SQLException e) {
-            // Handle exceptions (e.g., username already exists)
+            
             e.printStackTrace();
             return false;
         }
@@ -200,8 +201,7 @@ public class Register extends javax.swing.JPanel {
         for (byte b : hashedPassword) {
             sb.append(String.format("%02x", b & 0xFF));
         }
-        
-        //System.out.println(Arrays.toString(salt));
+       
         for (byte s : salt) {
             System.out.print(s + " ");
         }

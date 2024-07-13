@@ -134,7 +134,6 @@ public class Login extends javax.swing.JPanel {
     }
     
     
-    // look up credentials to check if password is correct
     public boolean isPasswordCorrect(String usernameInput, String passwordInput) throws NoSuchAlgorithmException{
         ArrayList<User> users = sqlite.getUsers();
         
