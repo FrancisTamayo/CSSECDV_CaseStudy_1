@@ -323,22 +323,22 @@ public class SQLite {
         }
     }
     
-    public void lockUser(String user) {
+    public void lockUser(String user, boolean shouldLock) {
         String sql = "UPDATE users SET locked = ? WHERE username = ?";
 
         try (Connection conn = DriverManager.getConnection(driverURL);
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, 1);
+        
+            //Set the locked status based on the shouldLock parameter
+            pstmt.setInt(1, shouldLock ? 1 : 0); //1 for lock, 0 for unlock
             pstmt.setString(2, user);
-        //    pstmt.setBoolean(3, user.isDisabled());
-        //    pstmt.setString(4, user.getUsername());
-
+        
             pstmt.executeUpdate();
+            System.out.println(user + " has been " + (shouldLock ? "locked." : "unlocked."));
         } catch (Exception ex) {
             System.out.print(ex);
-        }
     }
+}
     
     public Product getProduct(String name){
         String sql = "SELECT name, stock, price FROM product WHERE name='" + name + "';";
@@ -353,5 +353,33 @@ public class SQLite {
             System.out.print(ex);
         }
         return product;
+    }
+    
+    public void updateUserRole(String username, int role) {
+        String sql = "UPDATE users SET role = ? WHERE username = ?";
+        
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, role);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+            System.out.println("Role of user " + username + " has been updated to " + role);
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void updateUserPassword(String username, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+            System.out.println("Password for user " + username + " has been updated.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
     }
 }

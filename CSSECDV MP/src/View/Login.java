@@ -109,6 +109,10 @@ public class Login extends javax.swing.JPanel {
                 if (user.getUsername().equals(usernameFld.getText())) {
                 //    authUser = user;
                 //    System.out.println(ctr);
+                    if (user.isLocked()) {
+                        JOptionPane.showMessageDialog(null, "Your account is locked. Please contact Admin to unlock your account.");
+                        return;
+                    }   
                     break;
                 }
                
@@ -134,7 +138,7 @@ public class Login extends javax.swing.JPanel {
                     // if login attempts is 5, disable,, update user
                     if (users.get(ctr).getLoginAttempts() == 4){
                         // disable = 1
-                        sqlite.lockUser(usernameFld.getText());
+                        sqlite.lockUser(usernameFld.getText(), true);
                         JOptionPane.showMessageDialog(null, "Account is Diabled. Please contact Admin to re-enable the account.");
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid Username or Password!");

@@ -70,4 +70,8 @@ public class User {
      public int getLoginAttempts() {
         return attempts;
     }
+     
+    public boolean isLocked() {
+        return locked == 1;
+    }
 }

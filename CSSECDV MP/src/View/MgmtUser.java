@@ -7,6 +7,8 @@ package View;
 
 import Controller.SQLite;
 import Model.User;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -15,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  *
@@ -24,6 +29,8 @@ public class MgmtUser extends javax.swing.JPanel {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
+    public Register register;
+    private static final int MIN_PASS_LENGTH = 8;
     
     public MgmtUser(SQLite sqlite) {
         initComponents();
@@ -188,40 +195,59 @@ public class MgmtUser extends javax.swing.JPanel {
             String result = (String) JOptionPane.showInputDialog(null, "USER: " + tableModel.getValueAt(table.getSelectedRow(), 0), 
                 "EDIT USER ROLE", JOptionPane.QUESTION_MESSAGE, null, options, options[(int)tableModel.getValueAt(table.getSelectedRow(), 2) - 1]);
             
+            
             if(result != null){
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
-                System.out.println(result.charAt(0));
+                
+                String username = (String)tableModel.getValueAt(table.getSelectedRow(), 0);
+                int role = Integer.parseInt(result.substring(0, 1));
+            
+                sqlite.updateUserRole(username, role);
+                tableModel.setValueAt(role, table.getSelectedRow(), 2);
             }
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         if(table.getSelectedRow() >= 0){
-            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
+            String username = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + username + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                sqlite.removeUser(username);
+                tableModel.removeRow(table.getSelectedRow());
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void lockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockBtnActionPerformed
-        if(table.getSelectedRow() >= 0){
+        if (table.getSelectedRow() >= 0) {
+            String username = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
             String state = "lock";
-            if("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")){
+        
+            if ("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")) {
                 state = "unlock";
             }
-            
-            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
-            
+        
+            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + username + "?", "USER", JOptionPane.YES_NO_OPTION);
+        
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                //Lock or unlock user based on the current state
+                if ("lock".equals(state)) {
+                    sqlite.lockUser(username, true); //Locking the user
+                    System.out.println(username + " has been locked.");
+                    tableModel.setValueAt(1, table.getSelectedRow(), 3);
+                } else {
+                    sqlite.lockUser(username, false); //Unlocking the user
+                    System.out.println(username + " has been unlocked.");
+                    tableModel.setValueAt(0, table.getSelectedRow(), 3);
+                }
             }
         }
     }//GEN-LAST:event_lockBtnActionPerformed
 
     private void chgpassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chgpassBtnActionPerformed
         if(table.getSelectedRow() >= 0){
+            String username = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
             JTextField password = new JPasswordField();
             JTextField confpass = new JPasswordField();
             designer(password, "PASSWORD");
@@ -234,13 +260,81 @@ public class MgmtUser extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
             
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(password.getText());
-                System.out.println(confpass.getText());
+             //   System.out.println(password.getText());
+              //  System.out.println(confpass.getText());
+                String newPassword = password.getText();
+                String confirmPassword = confpass.getText();
+
+                if (!isPasswordComplex(newPassword)) {
+                    JOptionPane.showMessageDialog(null, "Password should be at least 8 characters long, "
+                        + "contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+                } else if (!newPassword.equals(confirmPassword)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match.");
+                } else {
+                    String hashedPassword = null;
+
+                    try {
+                        hashedPassword = hashPassword(newPassword);
+                    } catch (NoSuchAlgorithmException ex) {
+                        ex.printStackTrace();
+                    }
+
+                sqlite.updateUserPassword(username, hashedPassword);
+                table.setValueAt(hashedPassword, table.getSelectedRow(), 1);
+                JOptionPane.showMessageDialog(null, "Password changed successfully.");
+            }
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
+    
+    private String hashPassword(String password) throws NoSuchAlgorithmException{
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(salt);
+        
+        byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashedPassword) {
+            sb.append(String.format("%02x", b & 0xFF));
+        }
+       
+        for (byte s : salt) {
+            System.out.print(s + " ");
+        }
+        
+        return sb.toString()+Arrays.toString(salt);
+      
+    }
+    
+    private boolean isPasswordComplex(String password) {
+        if (password.length() < MIN_PASS_LENGTH) {
+            return false;
+        }
 
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasDigit = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            } else if (!Character.isLetterOrDigit(c)) {
+                hasSpecialChar = true;
+            }
+        }
+
+        return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chgpassBtn;
     private javax.swing.JButton deleteBtn;

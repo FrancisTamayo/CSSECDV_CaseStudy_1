@@ -23,6 +23,8 @@ public class Main {
     public void init(){
         // Initialize a driver object
         sqlite = new SQLite();
+        //sqlite.dropUserTable();
+        //sqlite.createUserTable();
 
 //        // Create a database
 //        sqlite.createNewDatabase();
