@@ -308,25 +308,25 @@ public class Frame extends javax.swing.JFrame {
         
         // if role is 3 hide everythin except the client
         
-        if (role == 3){
+        if (role == 2){
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);
         //    adminBtn.setVisible(false);
         } 
         
-        if (role == 4){
+        if (role == 3){
             clientBtn.setVisible(false);
             managerBtn.setVisible(false);
             adminBtn.setVisible(false);
         } 
         
-        if (role == 5){
+        if (role == 4){
             clientBtn.setVisible(false);
             staffBtn.setVisible(false);
             adminBtn.setVisible(false);
         } 
         
-        if (role == 6){
+        if (role == 5){
             clientBtn.setVisible(false);
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);

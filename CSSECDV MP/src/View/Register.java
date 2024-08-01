@@ -157,7 +157,7 @@ public class Register extends javax.swing.JPanel {
         
     // i dont think i need to add the 3 since the role is 2
     
-        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, 3)";
+        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
     
         try (Connection conn = DriverManager.getConnection(driverURL);
             PreparedStatement statement = conn.prepareStatement(query)) {
