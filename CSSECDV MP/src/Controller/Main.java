@@ -39,6 +39,11 @@ public class Main {
 //        sqlite.createProductTable();
 //        sqlite.createUserTable();
 //        
+//          sqlite.dropUserTable();
+//          sqlite.createUserTable();
+          
+         
+
 //        // Add sample history
 //        sqlite.addHistory("admin", "Antivirus", 1, "2019-04-03 14:30:00.000");
 //        sqlite.addHistory("manager", "Firewall", 1, "2019-04-03 14:30:01.000");

@@ -7,6 +7,7 @@ import Model.User;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -86,7 +87,8 @@ public class SQLite {
             + " username TEXT NOT NULL UNIQUE,\n"
             + " password TEXT NOT NULL,\n"
             + " role INTEGER DEFAULT 2,\n"
-            + " locked INTEGER DEFAULT 0\n"
+            + " locked INTEGER DEFAULT 0, \n"
+            + " attempts INTEGER DEFAULT 0\n" //modified
             + ");";
 
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -261,7 +263,7 @@ public class SQLite {
     }
     
     public ArrayList<User> getUsers(){
-        String sql = "SELECT id, username, password, role, locked FROM users";
+        String sql = "SELECT id, username, password, role, locked, attempts FROM users";
         ArrayList<User> users = new ArrayList<User>();
         
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -273,7 +275,8 @@ public class SQLite {
                                    rs.getString("username"),
                                    rs.getString("password"),
                                    rs.getInt("role"),
-                                   rs.getInt("locked")));
+                                   rs.getInt("locked"),
+                                   rs.getInt("attempts")));
             }
         } catch (Exception ex) {}
         return users;
@@ -298,6 +301,40 @@ public class SQLite {
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("User " + username + " has been deleted.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void updateUserAttempts(String user, int loginAttempts) {
+        String sql = "UPDATE users SET attempts = ? WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, loginAttempts);
+            pstmt.setString(2, user);
+        //    pstmt.setBoolean(3, user.isDisabled());
+        //    pstmt.setString(4, user.getUsername());
+
+            pstmt.executeUpdate();
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void lockUser(String user) {
+        String sql = "UPDATE users SET locked = ? WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, 1);
+            pstmt.setString(2, user);
+        //    pstmt.setBoolean(3, user.isDisabled());
+        //    pstmt.setString(4, user.getUsername());
+
+            pstmt.executeUpdate();
         } catch (Exception ex) {
             System.out.print(ex);
         }

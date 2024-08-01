@@ -311,7 +311,7 @@ public class Frame extends javax.swing.JFrame {
         if (role == 3){
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);
-            adminBtn.setVisible(false);
+        //    adminBtn.setVisible(false);
         } 
         
         if (role == 4){

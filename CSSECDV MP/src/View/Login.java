@@ -101,13 +101,24 @@ public class Login extends javax.swing.JPanel {
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         
          if (doesUserExist(usernameFld.getText())) {
-              
+            ArrayList<User> users = sqlite.getUsers();
            
+            int ctr = 0;
+        
+            for (User user : users) {
+                if (user.getUsername().equals(usernameFld.getText())) {
+                //    authUser = user;
+                //    System.out.println(ctr);
+                    break;
+                }
+               
+                ctr++;
+            }
                 
             try {
                 if (isPasswordCorrect(usernameFld.getText(), passwordFld.getText())){
                 
-                    
+                    sqlite.updateUserAttempts(usernameFld.getText(), 0);
                     Session.getInstance().setCurrentUser(usernameFld.getText());
                 
                     clearFields();
@@ -116,7 +127,21 @@ public class Login extends javax.swing.JPanel {
                     
                 } else {
                     
-                    JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
+                //    System.out.println(users.get(0).getLoginAttempts());
+                    
+                //    users.get(0).setLoginAttempts(users.get(0).getLoginAttempts() + 1);
+                
+                    // if login attempts is 5, disable,, update user
+                    if (users.get(ctr).getLoginAttempts() == 4){
+                        // disable = 1
+                        sqlite.lockUser(usernameFld.getText());
+                        JOptionPane.showMessageDialog(null, "Account is Diabled. Please contact Admin to re-enable the account.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
+                        sqlite.updateUserAttempts(usernameFld.getText(), users.get(ctr).getLoginAttempts() + 1);
+                    }
+                    
+                    
                 }
                 
             } catch (NoSuchAlgorithmException ex) {
@@ -201,10 +226,12 @@ public class Login extends javax.swing.JPanel {
         
     }
     
-     private void clearFields() {
+    private void clearFields() {
         usernameFld.setText("");
         passwordFld.setText("");
     }
+     
+     
     
     
     private javax.swing.JLabel jLabel1;

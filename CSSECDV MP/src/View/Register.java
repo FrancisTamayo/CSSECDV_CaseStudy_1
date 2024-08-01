@@ -155,6 +155,8 @@ public class Register extends javax.swing.JPanel {
     public boolean registerUser(String username, String hashedPassword) {
     //    char role = '3';
         
+    // i dont think i need to add the 3 since the role is 2
+    
         String query = "INSERT INTO users (username, password, role) VALUES (?, ?, 3)";
     
         try (Connection conn = DriverManager.getConnection(driverURL);
