@@ -196,6 +196,8 @@ public class MgmtUser extends javax.swing.JPanel {
             
             // new session
         //    String user = Session.getCurrentUser();
+            // add log
+        
             Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
                     
             String sessionId = Session.getInstance().getSessionId();
@@ -247,6 +249,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(confpass.getText());
             }
             
+            // add log
             Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());       
             String sessionId = Session.getInstance().getSessionId();
             System.out.println("Current User: " + Session.getInstance().getCurrentUser());

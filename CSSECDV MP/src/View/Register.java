@@ -15,6 +15,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Register extends javax.swing.JPanel {
@@ -136,11 +138,20 @@ public class Register extends javax.swing.JPanel {
             }
             
             if (registerUser(usernameFld.getText(), hashedPassword)) {
+                // add log
+                // Get the current timestamp
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                String timestamp = now.format(formatter);
+                
+                sqlite.addLogs("NOTICE", usernameFld.getText(), "User creation successful", timestamp);
+                
                 JOptionPane.showMessageDialog(null, "User registered successfully.");
                 frame.registerAction(usernameFld.getText(), hashedPassword, hashedPassword);
                 clearFields();
                 frame.loginNav();
             } else {
+                
                 JOptionPane.showMessageDialog(null, "Failed to register user.");
             }
             

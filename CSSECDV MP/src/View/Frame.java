@@ -13,6 +13,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
@@ -218,6 +220,7 @@ public class Frame extends javax.swing.JFrame {
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
         frameView.show(Container, "loginPnl");
+        Session.getInstance().clearSession();
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     public Main main;
@@ -366,6 +369,13 @@ public class Frame extends javax.swing.JFrame {
     private void handleIdleSessionTimeout() {
         // Handle idle timeout (e.g., notify the user and log them out)
         Session.getInstance().clearSession();
+        // add log
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = now.format(formatter);
+
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Idle Session Timeout", timestamp);
+        
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired due to inactivity. Please log in again.");
         loginNav();
     }
@@ -373,6 +383,13 @@ public class Frame extends javax.swing.JFrame {
     private void handleAbsoluteSessionTimeout() {
         // Handle absolute timeout (e.g., notify the user and log them out)
         Session.getInstance().clearSession();
+        // add log
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = now.format(formatter);
+
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Absolute Session Timeout", timestamp);
+        
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired. Please log in again.");
         loginNav();
     }
