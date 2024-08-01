@@ -206,9 +206,29 @@ public class MgmtProduct extends javax.swing.JPanel {
         int result = JOptionPane.showConfirmDialog(null, message, "ADD PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
         if (result == JOptionPane.OK_OPTION) {
-            System.out.println(nameFld.getText());
-            System.out.println(stockFld.getText());
-            System.out.println(priceFld.getText());
+          //  System.out.println(nameFld.getText());
+            //System.out.println(stockFld.getText());
+            //System.out.println(priceFld.getText());
+            String name = nameFld.getText();
+            int stock = 0;
+            double price = 0.0;
+
+            try {
+                stock = Integer.parseInt(stockFld.getText());
+                price = Double.parseDouble(priceFld.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter valid numeric values for stock and price.");
+                return;
+            }
+
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Product name cannot be empty.");
+            } else {
+                sqlite.addProduct(name, stock, price);
+                JOptionPane.showMessageDialog(null, "Product added successfully.");
+    
+                tableModel.addRow(new Object[]{name, stock, price});
+            }
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -217,6 +237,7 @@ public class MgmtProduct extends javax.swing.JPanel {
             JTextField nameFld = new JTextField(tableModel.getValueAt(table.getSelectedRow(), 0) + "");
             JTextField stockFld = new JTextField(tableModel.getValueAt(table.getSelectedRow(), 1) + "");
             JTextField priceFld = new JTextField(tableModel.getValueAt(table.getSelectedRow(), 2) + "");
+            String originalName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
 
             designer(nameFld, "PRODUCT NAME");
             designer(stockFld, "PRODUCT STOCK");
@@ -229,9 +250,32 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "EDIT PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(nameFld.getText());
-                System.out.println(stockFld.getText());
-                System.out.println(priceFld.getText());
+                //System.out.println(nameFld.getText());
+                //System.out.println(stockFld.getText());
+                //System.out.println(priceFld.getText());
+                
+                String name = nameFld.getText();
+                int stock = 0;
+                double price = 0.0;
+
+                try {
+                    stock = Integer.parseInt(stockFld.getText());
+                    price = Double.parseDouble(priceFld.getText());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid numeric values for stock and price.");
+                    return;
+                }
+
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Product name cannot be empty.");
+                } else {
+                    sqlite.updateProduct(originalName, name, stock, price);
+                    JOptionPane.showMessageDialog(null, "Product updated successfully.");
+
+                    tableModel.setValueAt(name, table.getSelectedRow(), 0);
+                    tableModel.setValueAt(stock, table.getSelectedRow(), 1);
+                    tableModel.setValueAt(price, table.getSelectedRow(), 2);
+                }
             }
         }
     }//GEN-LAST:event_editBtnActionPerformed
@@ -241,7 +285,11 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE PRODUCT", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
-                System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                //System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
+                JOptionPane.showMessageDialog(null, "Product deleted successfully.");
+
+                tableModel.removeRow(table.getSelectedRow());
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

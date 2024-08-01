@@ -382,4 +382,37 @@ public class SQLite {
             System.out.print(ex);
         }
     }
+    
+    public void updateProduct(String originalName, String name, int stock, double price) {
+        String sql = "UPDATE product SET name = ?, stock = ?, price = ? WHERE name = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+            pstmt.setString(1, name);
+            pstmt.setInt(2, stock);
+            pstmt.setDouble(3, price);
+            pstmt.setString(4, originalName);
+        
+            pstmt.executeUpdate();
+            System.out.println("Product " + originalName + " has been updated to " + name + ".");
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void removeProduct(String name) {
+        String sql = "DELETE FROM product WHERE name = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+            pstmt.setString(1, name);
+        
+            pstmt.executeUpdate();
+            System.out.println("Product " + name + " has been deleted.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
 }
