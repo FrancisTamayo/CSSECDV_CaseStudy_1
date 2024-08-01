@@ -6,6 +6,7 @@
 package View;
 
 import Controller.SQLite;
+import Model.Session;
 import Model.User;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -202,6 +203,8 @@ public class MgmtUser extends javax.swing.JPanel {
                 int role = Integer.parseInt(result.substring(0, 1));
             
                 sqlite.updateUserRole(username, role);
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Updated Role of " + username, timestamp);
                 tableModel.setValueAt(role, table.getSelectedRow(), 2);
             }
         }
@@ -214,6 +217,8 @@ public class MgmtUser extends javax.swing.JPanel {
             
             if (result == JOptionPane.YES_OPTION) {
                 sqlite.removeUser(username);
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Deleted " + username, timestamp);
                 tableModel.removeRow(table.getSelectedRow());
             }
         }
@@ -235,10 +240,14 @@ public class MgmtUser extends javax.swing.JPanel {
                 if ("lock".equals(state)) {
                     sqlite.lockUser(username, true); //Locking the user
                     System.out.println(username + " has been locked.");
+                    String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                    sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Locked " + username, timestamp);
                     tableModel.setValueAt(1, table.getSelectedRow(), 3);
                 } else {
                     sqlite.lockUser(username, false); //Unlocking the user
                     System.out.println(username + " has been unlocked.");
+                    String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                    sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Unlocked " + username, timestamp);
                     tableModel.setValueAt(0, table.getSelectedRow(), 3);
                 }
             }
@@ -280,6 +289,8 @@ public class MgmtUser extends javax.swing.JPanel {
                     }
 
                 sqlite.updateUserPassword(username, hashedPassword);
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Changed password of " + username, timestamp);
                 table.setValueAt(hashedPassword, table.getSelectedRow(), 1);
                 JOptionPane.showMessageDialog(null, "Password changed successfully.");
             }

@@ -202,7 +202,8 @@ public class MgmtProduct extends javax.swing.JPanel {
                         String username = Session.getInstance().getCurrentUser();
                         String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
                         sqlite.addHistory(username, productName, purchaseQuantity, timestamp);
-
+                        sqlite.addLogs("NOTICE", username, "Purchased " + purchaseQuantity + " " + productName, timestamp);
+                        
                         System.out.println("Purchased " + purchaseQuantity + " units of " + productName);
                     } else {
                         JOptionPane.showMessageDialog(null, "Not enough stock available", "Error", JOptionPane.ERROR_MESSAGE);
@@ -252,6 +253,9 @@ public class MgmtProduct extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Product added successfully.");
     
                 tableModel.addRow(new Object[]{name, stock, price});
+                String username = Session.getInstance().getCurrentUser();
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                sqlite.addLogs("NOTICE", username, "Added " + name, timestamp);
             }
         }
     }//GEN-LAST:event_addBtnActionPerformed
@@ -296,6 +300,10 @@ public class MgmtProduct extends javax.swing.JPanel {
                     sqlite.updateProduct(originalName, name, stock, price);
                     JOptionPane.showMessageDialog(null, "Product updated successfully.");
 
+                    String username = Session.getInstance().getCurrentUser();
+                    String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                    sqlite.addLogs("NOTICE", username, "Edited " + name, timestamp);
+                    
                     tableModel.setValueAt(name, table.getSelectedRow(), 0);
                     tableModel.setValueAt(stock, table.getSelectedRow(), 1);
                     tableModel.setValueAt(price, table.getSelectedRow(), 2);
@@ -313,6 +321,10 @@ public class MgmtProduct extends javax.swing.JPanel {
                 sqlite.removeProduct((String) tableModel.getValueAt(table.getSelectedRow(), 0));
                 JOptionPane.showMessageDialog(null, "Product deleted successfully.");
 
+                String username = Session.getInstance().getCurrentUser();
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                sqlite.addLogs("NOTICE", username, "Removed " + tableModel.getValueAt(table.getSelectedRow(), 0), timestamp);
+                
                 tableModel.removeRow(table.getSelectedRow());
             }
         }
