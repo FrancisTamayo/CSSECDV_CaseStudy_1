@@ -340,6 +340,25 @@ public class SQLite {
         }
     }
     
+    public void updateUserRole(String user, int role) {
+        String sql = "UPDATE users SET role = ? WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, role);
+            pstmt.setString(2, user);
+        //    pstmt.setBoolean(3, user.isDisabled());
+        //    pstmt.setString(4, user.getUsername());
+
+            pstmt.executeUpdate();
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    
+    
     public Product getProduct(String name){
         String sql = "SELECT name, stock, price FROM product WHERE name='" + name + "';";
         Product product = null;

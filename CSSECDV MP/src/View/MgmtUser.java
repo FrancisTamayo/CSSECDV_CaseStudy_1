@@ -6,6 +6,7 @@
 package View;
 
 import Controller.SQLite;
+import Model.Session;
 import Model.User;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
@@ -192,6 +193,14 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 System.out.println(result.charAt(0));
             }
+            
+            // new session
+        //    String user = Session.getCurrentUser();
+            Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
+                    
+            String sessionId = Session.getInstance().getSessionId();
+            System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+            System.out.println("Session ID: " + sessionId); 
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
 
@@ -237,6 +246,12 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
             }
+            
+            Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());       
+            String sessionId = Session.getInstance().getSessionId();
+            System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+            System.out.println("Session ID: " + sessionId); 
+            
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
 

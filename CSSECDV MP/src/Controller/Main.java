@@ -42,7 +42,7 @@ public class Main {
 //          sqlite.dropUserTable();
 //          sqlite.createUserTable();
           
-         
+//         sqlite.addHistory("mayu", "Scanner", 2, "2024-04-03 14:30:02.000");
 
 //        // Add sample history
 //        sqlite.addHistory("admin", "Antivirus", 1, "2019-04-03 14:30:00.000");

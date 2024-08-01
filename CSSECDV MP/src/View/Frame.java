@@ -7,16 +7,26 @@ import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 public class Frame extends javax.swing.JFrame {
     
     private final SQLite sqlite;
+    private Timer sessionTimer;
 
     public Frame() {
         initComponents();
         sqlite = new SQLite();
+        startSessionTimer();
+        addActivityListeners();
     }
 
     @SuppressWarnings("unchecked")
@@ -332,7 +342,62 @@ public class Frame extends javax.swing.JFrame {
             managerBtn.setVisible(false);
         } 
         
+        
     }
+    
+   private void startSessionTimer() {
+        sessionTimer = new Timer(60000, new ActionListener() { // Check every minute
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Session session = Session.getInstance();
+                
+                if (session.isIdleSessionExpired()) {
+                    handleIdleSessionTimeout();
+                } 
+                
+                if (session.isAbsoluteSessionExpired()) {
+                    handleAbsoluteSessionTimeout();
+                }
+            }
+        });
+        sessionTimer.start();
+    }
+
+    private void handleIdleSessionTimeout() {
+        // Handle idle timeout (e.g., notify the user and log them out)
+        Session.getInstance().clearSession();
+        javax.swing.JOptionPane.showMessageDialog(this, "Session has expired due to inactivity. Please log in again.");
+        loginNav();
+    }
+
+    private void handleAbsoluteSessionTimeout() {
+        // Handle absolute timeout (e.g., notify the user and log them out)
+        Session.getInstance().clearSession();
+        javax.swing.JOptionPane.showMessageDialog(this, "Session has expired. Please log in again.");
+        loginNav();
+    }
+
+    public void refreshSessionLastActivityTime() {
+        Session.getInstance().updateLastActivityTime();
+    }
+
+    // Add this method to handle user activity
+    private void addActivityListeners() {
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                refreshSessionLastActivityTime();
+            }
+        });
+
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                refreshSessionLastActivityTime();
+            }
+        });
+    }
+
     
     public void loginNav(){
         frameView.show(Container, "loginPnl");
@@ -345,6 +410,8 @@ public class Frame extends javax.swing.JFrame {
     public void registerAction(String username, String password, String confpass){
         main.sqlite.addUser(username, password);
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Container;
