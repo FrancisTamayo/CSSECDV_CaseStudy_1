@@ -8,6 +8,8 @@ package View;
 import Controller.SQLite;
 import Model.History;
 import Model.Product;
+import Model.Session;
+import Model.User;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -47,18 +49,37 @@ public class MgmtHistory extends javax.swing.JPanel {
         }
         
 //      LOAD CONTENTS
+
+        // if session role = 3, filter it
+         ArrayList<User> users = sqlite.getUsers();
+           
+            int role = 0;
+        
+            for (User user : users) {
+                if (user.getUsername().equals(Session.getInstance().getCurrentUser())) {
+                    role = user.getRole();
+                    break;
+                }
+                
+            }
+       
         ArrayList<History> history = sqlite.getHistory();
-        for(int nCtr = 0; nCtr < history.size(); nCtr++){
-            Product product = sqlite.getProduct(history.get(nCtr).getName());
-            tableModel.addRow(new Object[]{
-                history.get(nCtr).getUsername(), 
-                history.get(nCtr).getName(), 
-                history.get(nCtr).getStock(), 
-                product.getPrice(), 
-                product.getPrice() * history.get(nCtr).getStock(), 
-                history.get(nCtr).getTimestamp()
-            });
+        
+        for (int nCtr = 0; nCtr < history.size(); nCtr++) {
+            // Check if the role is client (role == 3) and match the current user, or if the role is administrator
+            if ((role == 3 && history.get(nCtr).getUsername().equals(Session.getInstance().getCurrentUser())) || role != 3) {
+                Product product = sqlite.getProduct(history.get(nCtr).getName());
+                tableModel.addRow(new Object[]{
+                    history.get(nCtr).getUsername(), 
+                    history.get(nCtr).getName(), 
+                    history.get(nCtr).getStock(), 
+                    product.getPrice(), 
+                    product.getPrice() * history.get(nCtr).getStock(), 
+                    history.get(nCtr).getTimestamp()
+                });
+            }
         }
+        
     }
     
     public void designer(JTextField component, String text){
