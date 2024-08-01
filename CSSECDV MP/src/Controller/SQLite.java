@@ -415,4 +415,20 @@ public class SQLite {
             System.out.print(ex);
         }
     }
+    
+    public void updateProductStock(String product, int purchased) {
+        String sql = "UPDATE product SET stock = stock - ? WHERE name = ?";
+
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setInt(1, purchased);
+                pstmt.setString(2, product);
+
+                pstmt.executeUpdate();
+                System.out.println("Stock for product " + product + " has been decreased by " + purchased + " units.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
 }

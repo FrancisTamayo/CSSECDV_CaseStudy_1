@@ -7,6 +7,7 @@ package View;
 
 import Controller.SQLite;
 import Model.Product;
+import Model.Session;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -185,7 +186,30 @@ public class MgmtProduct extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "PURCHASE PRODUCT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(stockFld.getText());
+                //System.out.println(stockFld.getText());
+                
+                try {
+                    int purchaseQuantity = Integer.parseInt(stockFld.getText());
+                    String productName = (String) tableModel.getValueAt(table.getSelectedRow(), 0);
+                    int currentStock = (int) tableModel.getValueAt(table.getSelectedRow(), 1);
+
+                    if (purchaseQuantity <= currentStock) {
+                        SQLite db = new SQLite();
+                        db.updateProductStock(productName, purchaseQuantity);
+
+                        tableModel.setValueAt(currentStock - purchaseQuantity, table.getSelectedRow(), 1);
+
+                        String username = Session.getInstance().getCurrentUser();
+                        String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
+                        sqlite.addHistory(username, productName, purchaseQuantity, timestamp);
+
+                        System.out.println("Purchased " + purchaseQuantity + " units of " + productName);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Not enough stock available", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Invalid number format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_purchaseBtnActionPerformed
