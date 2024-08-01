@@ -22,7 +22,8 @@ public class MgmtHistory extends javax.swing.JPanel {
     public SQLite sqlite;
     public DefaultTableModel tableModel;
     
-    public MgmtHistory(SQLite sqlite) {
+   
+    public MgmtHistory(SQLite sqlite, boolean search) {
         initComponents();
         this.sqlite = sqlite;
         tableModel = (DefaultTableModel)table.getModel();
@@ -35,8 +36,8 @@ public class MgmtHistory extends javax.swing.JPanel {
         table.getColumnModel().getColumn(5).setCellRenderer(rightAlign);
         
 //        UNCOMMENT TO DISABLE BUTTONS
-//        searchBtn.setVisible(false);
-//        reportBtn.setVisible(false);
+        searchBtn.setVisible(search);
+    //    reportBtn.setVisible(report);
     }
 
     public void init(){

@@ -153,13 +153,16 @@ public class Register extends javax.swing.JPanel {
     }//GEN-LAST:event_backBtnActionPerformed
     
     public boolean registerUser(String username, String hashedPassword) {
-        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+    //    char role = '3';
+        
+        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, 3)";
     
         try (Connection conn = DriverManager.getConnection(driverURL);
             PreparedStatement statement = conn.prepareStatement(query)) {
         
             statement.setString(1, username);
             statement.setString(2, hashedPassword);
+        //    statement.setString(3, 3);
             statement.executeUpdate();
             return true;
         

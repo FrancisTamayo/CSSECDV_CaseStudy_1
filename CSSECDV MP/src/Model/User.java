@@ -6,6 +6,7 @@ public class User {
     private String password;
     private int role = 2;
     private int locked = 0;
+    private int loginAttempts;
 
     public User(String username, String password){
         this.username = username;
@@ -18,6 +19,7 @@ public class User {
         this.password = password;
         this.role = role;
         this.locked = locked;
+       
     }
     
     public int getId() {
@@ -34,6 +36,10 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    
+    public void setLoginAttempts(int loginAttempts) {
+        this.loginAttempts = loginAttempts;
     }
 
     public String getPassword() {
@@ -58,5 +64,9 @@ public class User {
 
     public void setLocked(int locked) {
         this.locked = locked;
+    }
+    
+     public int getLoginAttempts() {
+        return loginAttempts;
     }
 }

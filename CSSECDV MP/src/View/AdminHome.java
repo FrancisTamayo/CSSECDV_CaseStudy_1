@@ -33,9 +33,9 @@ public class AdminHome extends javax.swing.JPanel {
     }
     
     public void init(SQLite sqlite){
-        mgmtHistory = new MgmtHistory(sqlite);
+        mgmtHistory = new MgmtHistory(sqlite, true);
         mgmtLogs = new MgmtLogs(sqlite);
-        mgmtProduct = new MgmtProduct(sqlite);
+        mgmtProduct = new MgmtProduct(sqlite, false, true, true, true);
         mgmtUser = new MgmtUser(sqlite);
         
         Content.setLayout(contentView);

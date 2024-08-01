@@ -1,15 +1,22 @@
 package View;
 
 import Controller.Main;
+import Controller.SQLite;
+import Model.Session;
+import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import javax.swing.WindowConstants;
 
 public class Frame extends javax.swing.JFrame {
+    
+    private final SQLite sqlite;
 
     public Frame() {
         initComponents();
+        sqlite = new SQLite();
     }
 
     @SuppressWarnings("unchecked")
@@ -241,11 +248,90 @@ public class Frame extends javax.swing.JFrame {
         Content.add(staffHomePnl, "staffHomePnl");
         Content.add(clientHomePnl, "clientHomePnl");
         
+    /*    //make the button invisible or visible depending on the number
+        
+        // get session name
+        String currentUser = Session.getInstance().getCurrentUser();
+        
+        // find the username sa list of users then get which role it is
+        ArrayList<User> users = sqlite.getUsers();
+        
+        System.out.println(currentUser);
+        int role = 0;
+        
+        for (User user : users) {
+        //    System.out.println(user.getUsername());
+            
+            if (user.getUsername().equals(currentUser)) {
+                role = user.getRole();
+                
+            }
+        }
+        
+        
+        
+        // if role is 3 hide everythin except the client
+        if (role == 2){
+            adminBtn.setVisible(false);
+            staffBtn.setVisible(false);
+            managerBtn.setVisible(false);
+            adminBtn.setVisible(false);
+        } */
+        
+       
+    
         this.setVisible(true);
     }
     
     public void mainNav(){
         frameView.show(Container, "homePnl");
+        
+         // get session name
+        String currentUser = Session.getInstance().getCurrentUser();
+        
+        // find the username sa list of users then get which role it is
+        ArrayList<User> users = sqlite.getUsers();
+        
+        System.out.println(currentUser);
+        int role = 0;
+        
+        for (User user : users) {
+        //    System.out.println(user.getUsername());
+            
+            if (user.getUsername().equals(currentUser)) {
+                role = user.getRole();
+                
+            }
+        }
+        
+    //    role = 6;
+        
+        // if role is 3 hide everythin except the client
+        
+        if (role == 3){
+            staffBtn.setVisible(false);
+            managerBtn.setVisible(false);
+            adminBtn.setVisible(false);
+        } 
+        
+        if (role == 4){
+            clientBtn.setVisible(false);
+            managerBtn.setVisible(false);
+            adminBtn.setVisible(false);
+        } 
+        
+        if (role == 5){
+            clientBtn.setVisible(false);
+            staffBtn.setVisible(false);
+            adminBtn.setVisible(false);
+        } 
+        
+        if (role == 6){
+            clientBtn.setVisible(false);
+            staffBtn.setVisible(false);
+            managerBtn.setVisible(false);
+        } 
+        
     }
     
     public void loginNav(){

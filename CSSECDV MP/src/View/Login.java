@@ -1,6 +1,8 @@
 
 package View;
 
+import Model.Session;
+
 import Model.User;
 import java.util.ArrayList;
 import Controller.SQLite;
@@ -98,13 +100,22 @@ public class Login extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         
-        if (doesUserExist(usernameFld.getText())) {
+         if (doesUserExist(usernameFld.getText())) {
+              
+           
+                
             try {
                 if (isPasswordCorrect(usernameFld.getText(), passwordFld.getText())){
+                
+                    
+                    Session.getInstance().setCurrentUser(usernameFld.getText());
+                
                     clearFields();
+                
                     frame.mainNav();
                     
                 } else {
+                    
                     JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
                 }
                 
