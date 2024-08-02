@@ -10,8 +10,8 @@ public class Session {
     private String sessionId;
     private Instant sessionStartTime;
     private Instant lastActivityTime;
-    private final long TIMEOUT_DURATION_ABSOLUTE = 2 * 60 * 1000;; //1 minute //15 * 60 * 1000; // 15 minutes in milliseconds
-    private final long TIMEOUT_DURATION_IDLE = 1 * 60 * 1000;
+    private final long TIMEOUT_DURATION_ABSOLUTE = 430 * 60 * 1000;
+    private final long TIMEOUT_DURATION_IDLE = 30 * 60 * 1000;
     
     private Session() {
         sessionStartTime = Instant.now();
