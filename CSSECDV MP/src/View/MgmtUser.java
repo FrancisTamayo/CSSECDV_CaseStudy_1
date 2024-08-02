@@ -206,6 +206,12 @@ public class MgmtUser extends javax.swing.JPanel {
                 String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").format(new java.util.Date());
                 sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Updated Role of " + username, timestamp);
                 tableModel.setValueAt(role, table.getSelectedRow(), 2);
+                Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
+
+                String sessionId = Session.getInstance().getSessionId();
+                System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+                System.out.println("Session ID: " + sessionId); 
+                
             }
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
@@ -293,6 +299,11 @@ public class MgmtUser extends javax.swing.JPanel {
                 sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Changed password of " + username, timestamp);
                 table.setValueAt(hashedPassword, table.getSelectedRow(), 1);
                 JOptionPane.showMessageDialog(null, "Password changed successfully.");
+                Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
+
+                String sessionId = Session.getInstance().getSessionId();
+                System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+                System.out.println("Session ID: " + sessionId); 
             }
             }
         }

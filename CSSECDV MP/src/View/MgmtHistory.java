@@ -67,7 +67,7 @@ public class MgmtHistory extends javax.swing.JPanel {
         
         for (int nCtr = 0; nCtr < history.size(); nCtr++) {
             // Check if the role is client (role == 3) and match the current user, or if the role is administrator
-            if ((role == 3 && history.get(nCtr).getUsername().equals(Session.getInstance().getCurrentUser())) || role != 3) {
+            if ((role == 2 && history.get(nCtr).getUsername().equals(Session.getInstance().getCurrentUser())) || role != 2) {
                 Product product = sqlite.getProduct(history.get(nCtr).getName());
                 tableModel.addRow(new Object[]{
                     history.get(nCtr).getUsername(), 
