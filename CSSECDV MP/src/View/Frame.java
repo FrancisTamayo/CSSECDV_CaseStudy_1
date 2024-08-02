@@ -268,6 +268,11 @@ public class Frame extends javax.swing.JFrame {
         frameView.show(Container, "loginPnl");
         
         Content.setLayout(contentView);
+        
+        adminBtn.setVisible(false);
+        managerBtn.setVisible(false);
+        staffBtn.setVisible(false);
+        clientBtn.setVisible(false);
         //Content.add(adminHomePnl, "adminHomePnl");
         //Content.add(managerHomePnl, "managerHomePnl");
         //Content.add(staffHomePnl, "staffHomePnl");
@@ -470,12 +475,24 @@ public class Frame extends javax.swing.JFrame {
     
     private void resetPanels() {
         Content.removeAll();
-        adminBtn.setVisible(false);
-        managerBtn.setVisible(false);
-        staffBtn.setVisible(false);
-        clientBtn.setVisible(false);
-        Content.repaint();
-        Content.revalidate();
+    adminHomePnl = new AdminHome();
+    managerHomePnl = new ManagerHome();
+    staffHomePnl = new StaffHome();
+    clientHomePnl = new ClientHome();
+
+    // Reinitialize panels with the SQLite instance
+    adminHomePnl.init(sqlite);
+    managerHomePnl.init(sqlite);
+    staffHomePnl.init(sqlite);
+    clientHomePnl.init(sqlite);
+
+    adminBtn.setVisible(false);
+    managerBtn.setVisible(false);
+    staffBtn.setVisible(false);
+    clientBtn.setVisible(false);
+    
+    Content.repaint();
+    Content.revalidate();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
