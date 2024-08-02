@@ -1,6 +1,7 @@
 
 package View;
 import Controller.SQLite;
+import Model.Session;
 import Model.User;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -15,6 +16,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Register extends javax.swing.JPanel {
@@ -136,8 +139,14 @@ public class Register extends javax.swing.JPanel {
             }
             
             if (registerUser(usernameFld.getText(), hashedPassword)) {
+                
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                String timestamp = now.format(formatter);
+                
                 JOptionPane.showMessageDialog(null, "User registered successfully.");
                 frame.registerAction(usernameFld.getText(), hashedPassword, hashedPassword);
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "User Successful Creation", timestamp);
                 clearFields();
                 frame.loginNav();
             } else {

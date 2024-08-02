@@ -132,7 +132,7 @@ public class Login extends javax.swing.JPanel {
                     
                     Session.getInstance().setCurrentUser(usernameFld.getText());
                     String sessionId = Session.getInstance().getSessionId();
-                    System.out.println("Session ID: " + sessionId); // For debugging purposes
+                    System.out.println("Session ID: " + sessionId); 
                     sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "User Successful Login", timestamp);
                     
                     clearFields();
@@ -142,7 +142,7 @@ public class Login extends javax.swing.JPanel {
                 } else {
                     
                     if (users.get(ctr).getLoginAttempts() == 4){
-                        // disable = 1
+                        
                         sqlite.lockUser(usernameFld.getText(), true);
                         sqlite.updateUserRole(usernameFld.getText(), 1);
                         JOptionPane.showMessageDialog(null, "Account is Diabled. Please contact Admin to re-enable the account.");
