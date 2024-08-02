@@ -109,8 +109,7 @@ public class Login extends javax.swing.JPanel {
         
             for (User user : users) {
                 if (user.getUsername().equals(usernameFld.getText())) {
-                //    authUser = user;
-                //    System.out.println(ctr);
+            
                     if (user.isLocked()) {
                         JOptionPane.showMessageDialog(null, "Your account is locked. Please contact Admin to unlock your account.");
                         return;
@@ -142,11 +141,6 @@ public class Login extends javax.swing.JPanel {
                     
                 } else {
                     
-                //    System.out.println(users.get(0).getLoginAttempts());
-                    
-                //    users.get(0).setLoginAttempts(users.get(0).getLoginAttempts() + 1);
-                
-                    // if login attempts is 5, disable,, update user
                     if (users.get(ctr).getLoginAttempts() == 4){
                         // disable = 1
                         sqlite.lockUser(usernameFld.getText(), true);
@@ -155,7 +149,7 @@ public class Login extends javax.swing.JPanel {
                         
                         Session.getInstance().setCurrentUser(usernameFld.getText());
                         String sessionId = Session.getInstance().getSessionId();
-                        System.out.println("Session ID: " + sessionId); // For debugging purposes
+                        System.out.println("Session ID: " + sessionId); 
                         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Disable User", timestamp);
                         
                     } else {

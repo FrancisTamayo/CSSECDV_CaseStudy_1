@@ -152,11 +152,7 @@ public class Register extends javax.swing.JPanel {
         frame.loginNav();
     }//GEN-LAST:event_backBtnActionPerformed
     
-    public boolean registerUser(String username, String hashedPassword) {
-    //    char role = '3';
-        
-    // i dont think i need to add the 3 since the role is 2
-    
+    public boolean registerUser(String username, String hashedPassword) {    
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
     
         try (Connection conn = DriverManager.getConnection(driverURL);
@@ -164,7 +160,6 @@ public class Register extends javax.swing.JPanel {
         
             statement.setString(1, username);
             statement.setString(2, hashedPassword);
-        //    statement.setString(3, 3);
             statement.executeUpdate();
             return true;
         

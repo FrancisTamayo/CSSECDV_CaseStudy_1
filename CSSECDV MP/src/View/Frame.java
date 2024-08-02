@@ -215,7 +215,6 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-    //    Session.getInstance().clearSession();
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         String timestamp = now.format(formatter);
@@ -225,9 +224,6 @@ public class Frame extends javax.swing.JFrame {
         Session.getInstance().clearSession();
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
     
-        Session.getInstance().setCurrentUser("id");
-        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
-        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
         
         resetPanels();
@@ -273,45 +269,7 @@ public class Frame extends javax.swing.JFrame {
         managerBtn.setVisible(false);
         staffBtn.setVisible(false);
         clientBtn.setVisible(false);
-        //Content.add(adminHomePnl, "adminHomePnl");
-        //Content.add(managerHomePnl, "managerHomePnl");
-        //Content.add(staffHomePnl, "staffHomePnl");
-        //Content.add(clientHomePnl, "clientHomePnl");
-       
         
-        
-    /*    //make the button invisible or visible depending on the number
-        
-        // get session name
-        String currentUser = Session.getInstance().getCurrentUser();
-        
-        // find the username sa list of users then get which role it is
-        ArrayList<User> users = sqlite.getUsers();
-        
-        System.out.println(currentUser);
-        int role = 0;
-        
-        for (User user : users) {
-        //    System.out.println(user.getUsername());
-            
-            if (user.getUsername().equals(currentUser)) {
-                role = user.getRole();
-                
-            }
-        }
-        
-        
-        
-        // if role is 3 hide everythin except the client
-        if (role == 2){
-            adminBtn.setVisible(false);
-            staffBtn.setVisible(false);
-            managerBtn.setVisible(false);
-            adminBtn.setVisible(false);
-        } */
-        
-       
-    
         this.setVisible(true);
     }
     
@@ -320,27 +278,19 @@ public class Frame extends javax.swing.JFrame {
         
         frameView.show(Container, "homePnl");
         
-         // get session name
         String currentUser = Session.getInstance().getCurrentUser();
         
-        // find the username sa list of users then get which role it is
         ArrayList<User> users = sqlite.getUsers();
         
         System.out.println(currentUser);
         int role = 0;
         
-        for (User user : users) {
-        //    System.out.println(user.getUsername());
-            
+        for (User user : users) {  
             if (user.getUsername().equals(currentUser)) {
                 role = user.getRole();
                 
             }
         }
-        
-    //    role = 6;
-        
-        // if role is 3 hide everythin except the client
         
         if (role == 2){
             Content.add(clientHomePnl, "clientHomePnl");
@@ -396,8 +346,6 @@ public class Frame extends javax.swing.JFrame {
     }
 
     private void handleIdleSessionTimeout() {
-        // Handle idle timeout (e.g., notify the user and log them out)
-    //    Session.getInstance().clearSession();
         
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -409,18 +357,12 @@ public class Frame extends javax.swing.JFrame {
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired due to inactivity. Please log in again.");
         
-        Session.getInstance().setCurrentUser("id");
-        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
-        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
         
         loginNav();
     }
 
-    private void handleAbsoluteSessionTimeout() {
-        // Handle absolute timeout (e.g., notify the user and log them out)
-    //    Session.getInstance().clearSession();
-  
+    private void handleAbsoluteSessionTimeout() {  
         
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -432,9 +374,6 @@ public class Frame extends javax.swing.JFrame {
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired. Please log in again.");
         
-        Session.getInstance().setCurrentUser("id");
-        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
-        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
         
         loginNav();
@@ -444,7 +383,6 @@ public class Frame extends javax.swing.JFrame {
         Session.getInstance().updateLastActivityTime();
     }
 
-    // Add this method to handle user activity
     private void addActivityListeners() {
         addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -474,7 +412,7 @@ public class Frame extends javax.swing.JFrame {
     }
     
     private void resetPanels() {
-        Content.removeAll();
+    Content.removeAll();
     adminHomePnl = new AdminHome();
     managerHomePnl = new ManagerHome();
     staffHomePnl = new StaffHome();

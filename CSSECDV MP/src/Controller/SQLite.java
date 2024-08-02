@@ -314,9 +314,7 @@ public class SQLite {
 
             pstmt.setInt(1, loginAttempts);
             pstmt.setString(2, user);
-        //    pstmt.setBoolean(3, user.isDisabled());
-        //    pstmt.setString(4, user.getUsername());
-
+  
             pstmt.executeUpdate();
         } catch (Exception ex) {
             System.out.print(ex);

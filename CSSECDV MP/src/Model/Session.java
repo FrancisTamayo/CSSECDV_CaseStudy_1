@@ -32,7 +32,6 @@ public class Session {
     public void setCurrentUser(String currentUser) {
         this.currentUser = currentUser;
         this.sessionId = generateSessionId();
-    //    updateSessionStartTime();
     }
 
     public String getSessionId() {
@@ -40,18 +39,15 @@ public class Session {
     }
 
     private String generateSessionId() {
-        // Generate 64 bits of entropy
         
         updateSessionStartTime();
         
         SecureRandom secureRandom = new SecureRandom();
-        byte[] randomBytes = new byte[8]; // 64 bits
+        byte[] randomBytes = new byte[8]; 
         secureRandom.nextBytes(randomBytes);
 
-        // Convert to a 128-bit session ID using Base64 encoding
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
-        
-        
+         
     }
 
     public void clearSession() {

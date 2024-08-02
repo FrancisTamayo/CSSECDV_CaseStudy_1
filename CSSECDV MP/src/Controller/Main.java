@@ -115,7 +115,7 @@ public class Main {
                 
         String sessionId = Session.getInstance().getSessionId();
         System.out.println("Session ID: " + sessionId); // For debugging purposes
-        System.out.println("Session ID: " + Session.getInstance().getCurrentUser());
+        System.out.println("Session User: " + Session.getInstance().getCurrentUser());
         
         
         frame.init(this);
