@@ -230,6 +230,8 @@ public class Frame extends javax.swing.JFrame {
         System.out.println("Current User: " + Session.getInstance().getCurrentUser());
         sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
         
+        resetPanels();
+        
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
 
@@ -309,6 +311,8 @@ public class Frame extends javax.swing.JFrame {
     }
     
     public void mainNav(){
+        resetPanels();
+        
         frameView.show(Container, "homePnl");
         
          // get session name
@@ -462,6 +466,16 @@ public class Frame extends javax.swing.JFrame {
     
     public void registerAction(String username, String password, String confpass){
         main.sqlite.addUser(username, password);
+    }
+    
+    private void resetPanels() {
+        Content.removeAll();
+        adminBtn.setVisible(false);
+        managerBtn.setVisible(false);
+        staffBtn.setVisible(false);
+        clientBtn.setVisible(false);
+        Content.repaint();
+        Content.revalidate();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
