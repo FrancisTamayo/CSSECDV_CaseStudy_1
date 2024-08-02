@@ -213,6 +213,7 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        Session.getInstance().clearSession();
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
 
@@ -317,7 +318,7 @@ public class Frame extends javax.swing.JFrame {
         if (role == 2){
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);
-        //    adminBtn.setVisible(false);
+            adminBtn.setVisible(false);
         } 
         
         if (role == 3){

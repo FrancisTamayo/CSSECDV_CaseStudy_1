@@ -125,7 +125,7 @@ public class Login extends javax.swing.JPanel {
                     sqlite.updateUserAttempts(usernameFld.getText(), 0);
                     Session.getInstance().setCurrentUser(usernameFld.getText());
                 
-                     String sessionId = Session.getInstance().getSessionId();
+                    String sessionId = Session.getInstance().getSessionId();
                     System.out.println("Session ID: " + sessionId); // For debugging purposes
                     
                     clearFields();

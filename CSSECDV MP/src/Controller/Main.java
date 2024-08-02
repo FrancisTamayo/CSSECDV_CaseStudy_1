@@ -4,6 +4,7 @@ package Controller;
 import Model.History;
 import Model.Logs;
 import Model.Product;
+import Model.Session;
 import Model.User;
 import View.Frame;
 import java.sql.Timestamp;
@@ -109,6 +110,12 @@ public class Main {
         
         // Initialize User Interface
         Frame frame = new Frame();
+        
+        Session.getInstance().setCurrentUser("id");
+                
+        String sessionId = Session.getInstance().getSessionId();
+        System.out.println("Session ID: " + sessionId); // For debugging purposes
+        System.out.println("Session ID: " + Session.getInstance().getCurrentUser());
         
         
         frame.init(this);
