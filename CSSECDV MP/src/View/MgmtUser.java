@@ -209,6 +209,7 @@ public class MgmtUser extends javax.swing.JPanel {
                 Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
 
                 String sessionId = Session.getInstance().getSessionId();
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
                 System.out.println("Current User: " + Session.getInstance().getCurrentUser());
                 System.out.println("Session ID: " + sessionId); 
                 
@@ -299,7 +300,9 @@ public class MgmtUser extends javax.swing.JPanel {
                 sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Changed password of " + username, timestamp);
                 table.setValueAt(hashedPassword, table.getSelectedRow(), 1);
                 JOptionPane.showMessageDialog(null, "Password changed successfully.");
+                
                 Session.getInstance().setCurrentUser(Session.getInstance().getCurrentUser());
+                sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
 
                 String sessionId = Session.getInstance().getSessionId();
                 System.out.println("Current User: " + Session.getInstance().getCurrentUser());

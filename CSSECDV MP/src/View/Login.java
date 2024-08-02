@@ -9,6 +9,8 @@ import Controller.SQLite;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -120,13 +122,19 @@ public class Login extends javax.swing.JPanel {
             }
                 
             try {
+                
+                   LocalDateTime now = LocalDateTime.now();
+                   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                   String timestamp = now.format(formatter);
+                
                 if (isPasswordCorrect(usernameFld.getText(), passwordFld.getText())){
                 
                     sqlite.updateUserAttempts(usernameFld.getText(), 0);
+                    
                     Session.getInstance().setCurrentUser(usernameFld.getText());
-                
                     String sessionId = Session.getInstance().getSessionId();
                     System.out.println("Session ID: " + sessionId); // For debugging purposes
+                    sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "User Successful Login", timestamp);
                     
                     clearFields();
                 
@@ -144,6 +152,12 @@ public class Login extends javax.swing.JPanel {
                         sqlite.lockUser(usernameFld.getText(), true);
                         sqlite.updateUserRole(usernameFld.getText(), 1);
                         JOptionPane.showMessageDialog(null, "Account is Diabled. Please contact Admin to re-enable the account.");
+                        
+                        Session.getInstance().setCurrentUser(usernameFld.getText());
+                        String sessionId = Session.getInstance().getSessionId();
+                        System.out.println("Session ID: " + sessionId); // For debugging purposes
+                        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Disable User", timestamp);
+                        
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid Username or Password!");
                         sqlite.updateUserAttempts(usernameFld.getText(), users.get(ctr).getLoginAttempts() + 1);

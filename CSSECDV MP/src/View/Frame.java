@@ -9,6 +9,8 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
@@ -213,7 +215,21 @@ public class Frame extends javax.swing.JFrame {
     }//GEN-LAST:event_clientBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+    //    Session.getInstance().clearSession();
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = now.format(formatter);
+        
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "User Successful Logout", timestamp);
+        
         Session.getInstance().clearSession();
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
+    
+        Session.getInstance().setCurrentUser("id");
+        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
+        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
+        
         frameView.show(Container, "loginPnl");
     }//GEN-LAST:event_logoutBtnActionPerformed
 
@@ -362,15 +378,46 @@ public class Frame extends javax.swing.JFrame {
 
     private void handleIdleSessionTimeout() {
         // Handle idle timeout (e.g., notify the user and log them out)
+    //    Session.getInstance().clearSession();
+        
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = now.format(formatter);
+
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Idle Session Timeout", timestamp);
+        
         Session.getInstance().clearSession();
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired due to inactivity. Please log in again.");
+        
+        Session.getInstance().setCurrentUser("id");
+        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
+        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
+        
         loginNav();
     }
 
     private void handleAbsoluteSessionTimeout() {
         // Handle absolute timeout (e.g., notify the user and log them out)
+    //    Session.getInstance().clearSession();
+  
+        
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = now.format(formatter);
+
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Absolute Session Timeout", timestamp);
+        
         Session.getInstance().clearSession();
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Termination", timestamp);
         javax.swing.JOptionPane.showMessageDialog(this, "Session has expired. Please log in again.");
+        
+        Session.getInstance().setCurrentUser("id");
+        System.out.println("Session ID: " + Session.getInstance().getSessionId()); // For debugging purposes
+        System.out.println("Current User: " + Session.getInstance().getCurrentUser());
+        sqlite.addLogs("NOTICE", Session.getInstance().getCurrentUser(), "Session Creation", timestamp);
+        
         loginNav();
     }
 
