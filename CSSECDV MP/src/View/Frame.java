@@ -266,10 +266,12 @@ public class Frame extends javax.swing.JFrame {
         frameView.show(Container, "loginPnl");
         
         Content.setLayout(contentView);
-        Content.add(adminHomePnl, "adminHomePnl");
-        Content.add(managerHomePnl, "managerHomePnl");
-        Content.add(staffHomePnl, "staffHomePnl");
-        Content.add(clientHomePnl, "clientHomePnl");
+        //Content.add(adminHomePnl, "adminHomePnl");
+        //Content.add(managerHomePnl, "managerHomePnl");
+        //Content.add(staffHomePnl, "staffHomePnl");
+        //Content.add(clientHomePnl, "clientHomePnl");
+       
+        
         
     /*    //make the button invisible or visible depending on the number
         
@@ -332,27 +334,35 @@ public class Frame extends javax.swing.JFrame {
         // if role is 3 hide everythin except the client
         
         if (role == 2){
+            Content.add(clientHomePnl, "clientHomePnl");
+            clientBtn.setVisible(true);
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);
             adminBtn.setVisible(false);
         } 
         
         if (role == 3){
+            Content.add(staffHomePnl, "staffHomePnl");
             clientBtn.setVisible(false);
+            staffBtn.setVisible(true);
             managerBtn.setVisible(false);
             adminBtn.setVisible(false);
         } 
         
         if (role == 4){
+            Content.add(managerHomePnl, "managerHomePnl");
             clientBtn.setVisible(false);
             staffBtn.setVisible(false);
+            managerBtn.setVisible(true);
             adminBtn.setVisible(false);
         } 
         
         if (role == 5){
+            Content.add(adminHomePnl, "adminHomePnl");
             clientBtn.setVisible(false);
             staffBtn.setVisible(false);
             managerBtn.setVisible(false);
+            adminBtn.setVisible(true);
         } 
         
     }
